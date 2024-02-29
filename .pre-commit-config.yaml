@@ -9,9 +9,3 @@ repos:
     rev: v0.20.0
     hooks:
       - id: stylua-system
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
-    hooks:
-      - id: mdformat
-        additional_dependencies:
-        - mdformat-gfm
