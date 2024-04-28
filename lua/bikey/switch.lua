@@ -15,15 +15,22 @@ local input_methods = {
       interface = "org.kde.KeyboardLayouts",
       path = "/Layouts",
     },
-    normal_mode = function()
+    on_insert_enter = function()
+      ---@diagnostic disable-next-line: undefined-field, need-check-nil
+      dbus:setLayout(last_keyboard_layout)
+    end,
+    on_insert_leave = function()
       ---@diagnostic disable-next-line: undefined-field, need-check-nil
       last_keyboard_layout = dbus:getLayout()
       ---@diagnostic disable-next-line: undefined-field, need-check-nil
       dbus:setLayout(0)
     end,
-    insert_mode = function()
-      ---@diagnostic disable-next-line: undefined-field, need-check-nil
-      dbus:setLayout(last_keyboard_layout)
+    on_focus_gained = function()
+      local current_mode = vim.api.nvim_get_mode().mode
+      if current_mode ~= "i" and current_mode ~= "R" then
+        ---@diagnostic disable-next-line: undefined-field, need-check-nil
+        dbus:setLayout(0)
+      end
     end,
   },
   gnome = {
@@ -33,13 +40,7 @@ local input_methods = {
       interface = "org.gnome.Shell",
       path = "/org/gnome/Shell",
     },
-    normal_mode = function()
-      ---@diagnostic disable-next-line: undefined-field, need-check-nil
-      last_keyboard_layout = dbus:getLayout()
-      ---@diagnostic disable-next-line: undefined-field, need-check-nil
-      dbus:Eval("imports.ui.status.keyboard." .. "getInputSourceManager().inputSources" .. "[0].activate()")
-    end,
-    insert_mode = function()
+    on_insert_enter = function()
       ---@diagnostic disable-next-line: undefined-field, need-check-nil
       dbus:Eval(
         "imports.ui.status.keyboard."
@@ -48,6 +49,19 @@ local input_methods = {
           .. last_keyboard_layout
           .. "].activate()"
       )
+    end,
+    on_insert_leave = function()
+      ---@diagnostic disable-next-line: undefined-field, need-check-nil
+      last_keyboard_layout = dbus:getLayout()
+      ---@diagnostic disable-next-line: undefined-field, need-check-nil
+      dbus:Eval("imports.ui.status.keyboard." .. "getInputSourceManager().inputSources" .. "[0].activate()")
+    end,
+    on_focus_gained = function()
+      local current_mode = vim.api.nvim_get_mode().mode
+      if current_mode ~= "i" and current_mode ~= "R" then
+        ---@diagnostic disable-next-line: undefined-field, need-check-nil
+        dbus:Eval("imports.ui.status.keyboard." .. "getInputSourceManager().inputSources" .. "[0].activate()")
+      end
     end,
   },
 }
@@ -68,13 +82,15 @@ local input_method = get_input_method()
 if input_method == nil then
   errors.input_method_connection_error()
 
-  M.normal_mode = function() end
-  M.insert_mode = function() end
+  M.on_insert_enter = function() end
+  M.on_insert_leave = function() end
+  M.on_focus_gained = function() end
 else
   dbus = dbus_proxy.Proxy:new(input_methods[input_method].connection)
 
-  M.normal_mode = input_methods[input_method].normal_mode
-  M.insert_mode = input_methods[input_method].insert_mode
+  M.on_insert_enter = input_methods[input_method].on_insert_enter
+  M.on_insert_leave = input_methods[input_method].on_insert_leave
+  M.on_focus_gained = input_methods[input_method].on_focus_gained
 end
 
 return M
