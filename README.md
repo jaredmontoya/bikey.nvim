@@ -15,6 +15,8 @@ It works by ensuring that your first keyboard layout is selected in normal mode 
 
 ## 📦 Installation
 
+*As of now lazy.nvim natively supports installing luarocks so luarocks.nvim plugin is no longer needed but bikey.nvim does not currently use that feature because I no longer use lazy.nvim. Pull requests implementing lazy.nvim rockspec support are welcome.*
+
 ```lua
 -- Lazy
 {
@@ -43,8 +45,7 @@ use({
 
 ## 📝 Requirements
 
-- Neovim >= **0.10** ([Lazy](https://github.com/folke/lazy.nvim) + [luarocks](https://github.com/camspiers/luarocks))
-- Neovim >= **0.9** ([Packer](https://github.com/wbthomason/packer.nvim) or [Lazy](https://github.com/folke/lazy.nvim) + [nvim_rocks](https://github.com/theHamsta/nvim_rocks))
+- Neovim >= **0.10** ([Lazy](https://github.com/folke/lazy.nvim) + [luarocks.nvim](https://github.com/vhyrro/luarocks.nvim))
 - gobject introspection runtime
   - Arch
     - ```sh
