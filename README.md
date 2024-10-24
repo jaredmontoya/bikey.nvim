@@ -15,15 +15,10 @@ It works by ensuring that your first keyboard layout is selected in normal mode 
 
 ## 📦 Installation
 
-It is very hard to properly install and use luarocks while using [lazy.nvim](https://github.com/folke/lazy.nvim) at the moment, but it is possible:
-
-- [luarocks](https://github.com/camspiers/luarocks) is only available for neovim nightly(0.10). On top of that, it does not install [dbus_proxy](https://github.com/stefano-m/lua-dbus_proxy) correctly so you have to manually edit the directory structure of [dbus_proxy](https://github.com/stefano-m/lua-dbus_proxy) to make it available to [bikey.nvim](https://github.com/jaredmontoya/bikey.nvim). You can track this issue here: [#3](https://github.com/camspiers/luarocks/issues/3)
-- [nvim_rocks](https://github.com/theHamsta/nvim_rocks) should work with neovim 0.9 but it requires [PEP 668](https://peps.python.org/pep-0668/) to be disabled which is enabled by default for a good reason on all sane linux distributions that have python packages available for installation in their package manager.
-
 ```lua
 -- Lazy
 {
-  "camspiers/luarocks",
+  "vhyrro/luarocks.nvim",
     dependencies = {
       "rcarriga/nvim-notify", -- Optional dependency
     },
@@ -35,7 +30,7 @@ It is very hard to properly install and use luarocks while using [lazy.nvim](htt
   "jaredmontoya/bikey.nvim",
     event = "VeryLazy",
     dependencies = {
-      "camspiers/luarocks"
+      "vhyrro/luarocks.nvim"
     }
 }
 
